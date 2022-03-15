@@ -1,6 +1,8 @@
 ## Backend-ecommerce nodejs-exppress
 
-products/categories/user create and logins
+Products/categories/user create and logins
 ,still need to check with postman.
 
-node modules require: bscrypt,express generator,jsonwebtocken,mongoose(mongoDB)
+Node modules require: bscrypt,express generator,jsonwebtocken,mongoose(mongoDB)
+
+Funcion de check (mail  y password), modularizar y llamar mediante funcion en lugar de poner el "if" directamente en el schema perse.

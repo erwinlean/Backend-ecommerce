@@ -1,11 +1,9 @@
-const { post } = require("../routes");
 const products = require("../schema/productsSchema");
 
 module.exports = {
   allElements: async function (req, res, next) {
     try {
-      //const everyElement = await products.find().populate("category");
-      const everyElement = await products.find()
+      const everyElement = await products.find().populate("category");
       res.json(everyElement);
     } catch (err) {
       console.log(err);
@@ -71,10 +69,10 @@ module.exports = {
   },
   allElementsDelete: async function (req, res, next) {
     try {
-      const deleteMany = await products.deleteMany();
+      const deleteMany = await products.deleteMany({});
       res.json(deleteMany);
     } catch (err) {
       console.log(err);
-    }
-  },
+    };
+  }
 };

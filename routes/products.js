@@ -1,12 +1,14 @@
 var express = require('express');
 var router = express.Router();
-const controller = require("../controllers/productsController"); 
-router.get("/",controller.allElements);
-router.get("/:id",controller.elementById); 
-router.get("/:name",controller.elementByName); 
-router.post("/",(req,res,next)=>{req.app.jsonWebT()},controller.createElement);
-router.put("/:id",(req,res,next)=>{req.app.jsonWebT()},controller.elementUp);
-router.put("/:name",(req,res,next)=>{req.app.jsonWebT()},controller.allElementUp);
-router.delete("/:id",(req,res,next)=>{req.app.jsonWebT()},controller.elementDelete);
-router.delete("/",(req,res,next)=>{req.app.jsonWebT()},controller.allElementsDelete); 
-module.exports = router; 
+const controller = require("../controllers/productsController");
+
+router.get("/", controller.allElements);
+router.get("/:id", controller.elementById);
+router.get("/name/:name", controller.elementByName);
+router.post("/", controller.createElement);
+router.put("/:id", controller.elementUp);
+router.put("/name/:name", controller.allElementUp);
+router.delete("/:id", controller.elementDelete);
+router.delete("/", controller.allElementsDelete);
+
+module.exports = router;

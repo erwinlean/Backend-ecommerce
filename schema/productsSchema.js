@@ -1,4 +1,5 @@
-const mongoose = require ("../config/mongodb"); 
+const mongoose = require ("../config/mongoDb"); 
+
 const products = mongoose.Schema({ 
     name:{
         type:String,  
@@ -6,7 +7,7 @@ const products = mongoose.Schema({
         min:1
     },
     sku:{
-        type:mongoose.Schema.ObjectId,
+        type:String,
         ref:"types",
         unique:true
     },
@@ -15,7 +16,6 @@ const products = mongoose.Schema({
         type:Number, 
         require:true,
         min:1,
-        //Aqui podria ir % de aumento por pago o por iva, etc 
     },
     description:{
         type:String,
@@ -28,14 +28,15 @@ const products = mongoose.Schema({
         require:true,
         min:1
     },
-    category:{
-        type:mongoose.Schema.ObjectId,
-        lowercase:true,
-        ref:"Categories"
-    },
+    //category:{
+    //    type:mongoose.Schema.ObjectId,
+    //    lowercase:true,
+    //    ref:"Categories"
+    //},
     deleted:{
         type:Boolean,
         default:false
     }
 });
+
 module.exports = mongoose.model("products",products); 

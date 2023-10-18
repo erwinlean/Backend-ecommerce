@@ -1,8 +1,14 @@
 var mongoose = require('mongoose'); 
-mongoose.connect("mongodb://0.0.0.0:27017/").then(() => {
-console.log("conectado a la base de datos mongodb: 0.0.0.0:27017");
+require('dotenv').config();
+const dbCluster = process.env.DB_CLUSTER;
+
+mongoose.connect(dbCluster, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+}).then(() => {
+  console.log('Connected to MongoDB Atlas');
 }).catch((err) => {
-    console.log("No Conectado, error en base de datos", err);
+  console.error('Failed to connect to MongoDB Atlas:', err);
 });
-module.exports = mongoose; 
-//ver ip de coneccion
+  
+module.exports = mongoose;  

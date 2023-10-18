@@ -1,42 +1,40 @@
-const mongoose = require ("../config/mongoDb"); 
+const mongoose = require("mongoose");
+const Category = require("./categoriesSchema");
 
-const products = mongoose.Schema({ 
-    name:{
-        type:String,  
-        lowercase:true,
-        min:1
+const productSchema = new mongoose.Schema({
+    name: {
+        type: String,
+        lowercase: true,
+        minlength: 1,
     },
-    sku:{
-        type:String,
-        ref:"types",
-        unique:true
+    sku: {
+        type: String,
+        unique: true,
     },
-    type:String, 
-    price:{
-        type:Number, 
-        require:true,
-        min:1,
+    price: {
+        type: Number,
+        required: true,
+        min: 1,
     },
-    description:{
-        type:String,
-        lowercase:true,
-        require:true,
-        min:10
+    description: {
+        type: String,
+        lowercase: true,
+        required: true,
+        minlength: 10,
     },
-    quantity:{
-        type:Number,
-        require:true,
-        min:1
+    quantity: {
+        type: Number,
+        required: true,
+        min: 1,
     },
-    //category:{
-    //    type:mongoose.Schema.ObjectId,
-    //    lowercase:true,
-    //    ref:"Categories"
-    //},
-    deleted:{
-        type:Boolean,
-        default:false
+    category: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: Category,
+    },
+    deleted: {
+        type: Boolean,
+        default: false,
     }
 });
 
-module.exports = mongoose.model("products",products); 
+module.exports = mongoose.model("products", productSchema);

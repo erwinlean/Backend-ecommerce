@@ -34,6 +34,7 @@ module.exports = {
         price: req.body.price,
         description: req.body.description,
         quantity: req.body.quantity,
+        img: req.body.img,
         category: req.body.category,
         deleted: req.body.deleted,
       });

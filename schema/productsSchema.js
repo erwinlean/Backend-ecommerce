@@ -31,10 +31,13 @@ const productSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: Category,
     },
+    img:{
+        type: String
+    },
     deleted: {
         type: Boolean,
         default: false,
-    }
+    }                            
 });
 
 module.exports = mongoose.model("products", productSchema);

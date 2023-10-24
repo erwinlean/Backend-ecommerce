@@ -1,59 +1,141 @@
-//const { post } = require("../routes");
-//const users = require ("../schema/userSchema"); 
-//const bcrypt = require ("bcrypt"); 
-//const jwt = require("jsonwebtoken");
-////const jwtkey = require ("../config/jwt"); parece que no necesita un require por que ya esta en app gneral
-//
-//module.exports={
-//    allUsers: async function(req,res,next){
-//        try{
-//            const allUser = await users.find()
-//            res.json(allUser);
-//        }catch(err){
-//            console.log(err);
-//        }
-//    },
-//    usersId: async function(req,res,next){
-//        try{
-//            const userByid = await users.findById({_id:req.params.id},req.body)
-//            res.json(userByid);
-//        }catch(err){
-//            console.log(err);
-//        }
-//    },
-//    userLogin: async function(req,res,next){
-//        try{
-//            const usersComp = await users.findOne({email:req.body.email})
-//            if(!usersComp){
-//                console.log("error, no se encontro coincidencia de mail")
-//            }
-//            if(bcrypt.compareSync(req.body.password,usersComp.password)){
-//                const jwtToken= jwt.sign({
-//                    userName:usersComp.name
-//                },  keyjsonWT,{
-//                    expiresIn:"1h"
-//                })
-//                console.log(`funcionando token${jwtToken}`);
-//                console.log(`funcionando contraseña y mail ${usersComp}`);
-//            }else{
-//                console.log("error, contraseña incorrecta")
-//            }
-//        }catch(err){
-//            console.log(err);
-//            next()
-//        }
-//    },
-//    createUser: async function(req,res,next){
-//        try{
-//            const userSch = new users({
-//                name:req.body.name,
-//                email:req.body.email,
-//                password:req.body.password
-//            })
-//            const newUser = await userSch.save()
-//            res.json(newUser)
-//        }catch(err){
-//            console.log(err);
-//        }
-//    },    
-//}
+const users = require('../schema/userSchema');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const config = require('../config/jwt');
+
+module.exports = {
+    getUsers: async function (req, res, next) {
+        try {
+            const allUsers = await users.find({}, { password: 0 });
+
+            if (!allUsers || allUsers.length === 0) {
+                return res.status(404).json({ message: 'Usuarios no encontrados' });
+            }
+
+            return res.json({ usuarios: allUsers });
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ message: 'Error interno del servidor' });
+        }
+    },
+
+    createUser: async function (req, res, next) {
+        try {
+            const { name, email, password } = req.body;
+
+            if (!name || !email || !password) {
+                return res.status(400).json({ message: 'Faltan propiedades requeridas del usuario' });
+            };
+
+            const existingUser = await users.findOne({ email });
+            if (existingUser) {
+                return res.status(409).json({ message: 'El correo electrónico ya está en uso' });
+            };
+
+            const newUser = new users({
+                name,
+                email,
+                password,
+            });
+
+            await newUser.save();
+
+            const token = jwt.sign(
+                {
+                    userId: newUser._id,
+                    email: newUser.email,
+                },
+                config.jwtSecret,
+                {
+                    expiresIn: '1h',
+                }
+            );
+
+            return res.json({ message: 'Usuario creado exitosamente', token });
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ message: 'Error interno del servidor' });
+        }
+    },
+
+    userLogin: async function (req, res, next) {
+        try {
+            const { email, password } = req.body;
+
+            const user = await users.findOne({ email });
+
+            if (!user) {
+                return res.status(404).json({ message: 'No se encontró un usuario con ese correo electrónico' });
+            }
+
+            const passwordMatch = bcrypt.compareSync(password, user.password);
+
+            if (!passwordMatch) {
+                return res.status(401).json({ message: 'Contraseña incorrecta' });
+            }
+
+            const token = jwt.sign(
+                {
+                    userId: user._id,
+                    email: user.email,
+                },
+                config.jwtSecret,
+                {
+                    expiresIn: '1h',
+                }
+            );
+
+            return res.json({ message: 'Inicio de sesión exitoso', token });
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ message: 'Error interno del servidor' });
+        }
+    },
+
+    deleteUser: async function (req, res, next) {
+        try {
+            const token = req.header('Authorization');
+
+            if (!token) {
+                return res.status(401).json({ message: 'Token de autenticación faltante' });
+            }
+
+            jwt.verify(token, config.jwtSecret, (err, decoded) => {
+                if (err) {
+                    return res.status(401).json({ message: 'Token inválido o expirado' });
+                } else {
+                    const emailToDelete = req.params.email;
+
+                    if (!emailToDelete) {
+                        return res.status(400).json({ message: 'Se requiere el parámetro de correo electrónico' });
+                    }
+
+                    users.findOneAndDelete({ email: emailToDelete }, (err, user) => {
+                        if (err) {
+                            console.error(err);
+                            return res.status(500).json({ message: 'Error interno del servidor' });
+                        }
+                        if (!user) {
+                            return res.status(404).json({ message: `Usuario ${emailToDelete} no encontrado` });
+                        }
+                        return res.json({ message: `Usuario ${emailToDelete} eliminado exitosamente` });
+                    });
+                }
+            });
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ message: 'Error interno del servidor' });
+        }
+    },
+
+    deleteAllUsers: async function (req, res, next) {
+        try {
+            await users.deleteMany();
+        
+            return res.json({ message: "All users deleted successfully" });
+        } catch (error) {
+            console.log(error);
+            return errorHandler(500, "Internal server error", res);
+        };
+    },
+};

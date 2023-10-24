@@ -1,17 +1,21 @@
-const jwt = require("jsonwebtoken"); 
-var express = require('express');
-const keyjsonWT = "key123";
+const jwt = require("jsonwebtoken");
+const jwtSecret = "key123";
 
-const jsonWebT = (req,res,next) =>{
-    jwt.verify(req.body["token-Ok"],keyjsonWT),
-    function(err,ok){
-      if(err){
-        res.json(`error, token necesario ${err}`)
-      }else{
-        console.log(`funcionando token ${ok}`);
-        next();
-      }
-    } 
-} 
+const jsonWebT = (req, res, next) => {
+    const token = req.body["token-Ok"];
 
-module.exports=jsonWebT;
+    if (!token) {
+        return res.status(401).json("Error: Token necesario")
+    }
+
+    jwt.verify(token, keyjsonWT, (err, decoded) => {
+        if (err) {
+            return res.status(401).json(`Error en la verificación del token: ${err}`);
+        } else {
+            console.log(`Token verificado: ${decoded}`);
+            next();
+        }
+    });
+};
+
+module.exports = {jsonWebT,jwtSecret};

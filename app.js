@@ -4,10 +4,11 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const jsonWebT = require ("./config/jwt"); 
+
 const db = require('./config/mongoDB');
 
 var indexRouter = require('./routes/index');
-//var usersRouter = require('./routes/users');
+var usersRouter = require('./routes/users');
 var productsRouter = require('./routes/products'); 
 var categoriesRouter = require('./routes/categories');
 
@@ -21,10 +22,10 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter); 
-//app.use('/users', usersRouter);
-app.use("/products",productsRouter); 
-app.use('/categories', categoriesRouter);
+app.use('/api/', indexRouter); 
+app.use('/api/users', usersRouter);
+app.use("/api/products",productsRouter); 
+app.use('/api/categories', categoriesRouter);
 
 app.jsonwebtocken = jsonWebT;
 app.use(function(req, res, next) {

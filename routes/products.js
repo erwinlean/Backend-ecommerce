@@ -9,6 +9,6 @@ router.post("/", controller.createElement);
 router.put("/:id", controller.elementUp);
 router.put("/name/:name", controller.allElementUp);
 //router.delete("/:id", controller.elementDelete);
-router.delete("/", controller.allElementsDelete);
+router.delete("/delete", controller.allElementsDelete);
 
 module.exports = router;

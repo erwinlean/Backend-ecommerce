@@ -9,6 +9,7 @@ module.exports = {
       console.log(err);
     }
   },
+
   elementById: async function (req, res, next) {
     try {
       const elements = await products.findById(req.params.id);
@@ -17,6 +18,7 @@ module.exports = {
       console.log(err);
     }
   },
+
   elementByName: async function (req, res, next) {
     try {
       const elementsName = await products.find({ name: req.params.name });
@@ -25,6 +27,7 @@ module.exports = {
       console.log(err);
     }
   },
+
   createElement: async function (req, res, next) {
     try {
       const newElement = new products({
@@ -38,6 +41,7 @@ module.exports = {
         category: req.body.category,
         deleted: req.body.deleted,
       });
+
       const new4catalogo = await newElement.save();
       res.json(new4catalogo);
     } catch (err) {
@@ -52,6 +56,7 @@ module.exports = {
       console.log(err);
     }
   },
+  
   allElementUp: async function (req, res, next) {
     try {
       const upAll = await products.updateMany({ name: req.params.name }, req.body);
@@ -60,6 +65,7 @@ module.exports = {
       console.log(err);
     }
   },
+
   elementDelete: async function (req, res, next) {
     try {
       const deleteOne = await products.deleteOne({ _id: req.params.id });
@@ -68,6 +74,7 @@ module.exports = {
       console.log(err);
     }
   },
+
   allElementsDelete: async function (req, res, next) {
     try {
       const deleteMany = await products.deleteMany({});

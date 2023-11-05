@@ -5,6 +5,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const jsonWebT = require('./config/jwt');
 const db = require('./config/mongoDB');
+const cors = require('cors');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -21,8 +22,11 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public'));
 
-const cors = require('cors');
-app.use(cors());
+const corsOptions = {
+  origin: "*"
+  methods: 'GET,POST,PUT,DELETE',
+};
+app.use(cors(corsOptions));
 
 app.jsonwebtocken = jsonWebT;
 

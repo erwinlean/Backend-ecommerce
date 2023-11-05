@@ -40,6 +40,7 @@ module.exports = {
         img: req.body.img,
         category: req.body.category,
         deleted: req.body.deleted,
+        important: req.body.important
       });
 
       const new4catalogo = await newElement.save();

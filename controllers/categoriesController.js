@@ -10,6 +10,7 @@ module.exports = {
       res.status(500).json({ error: "Internal server error" });
     }
   },
+
   create: async function (req, res, next) {
     try {
       const { name } = req.body;
@@ -29,6 +30,7 @@ module.exports = {
       res.status(400).json({ error: "Bad request" });
     }
   },
+  
   elementDelete: async function (req, res, next) {
     try {
       const deleteOne = await categories.deleteMany({});

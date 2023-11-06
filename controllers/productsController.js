@@ -1,4 +1,5 @@
 const Products = require("../schema/productsSchema");
+const {capitalizeWords} = require("../utils/capitalize");
 
 module.exports = {
   allElements: async function (req, res, next) {
@@ -30,25 +31,33 @@ module.exports = {
 
   createElement: async function (req, res, next) {
     try {
-      const newElement = new Products({
-        name: req.body.name,
-        sku: req.body.sku,
-        type: req.body.type,
-        price: req.body.price,
-        description: req.body.description,
-        quantity: req.body.quantity,
-        img: req.body.img,
-        category: req.body.category,
-        deleted: req.body.deleted,
-        important: req.body.important
-      });
+      const {name, sku, type, price, description, quantity, img, category, deleted, important} = req.body
 
-      const new4catalogo = await newElement.save();
-      res.json(new4catalogo);
+      const nameCapitalize = capitalizeWords(name);
+      const descripcionCapitalize = capitalizeWords(description);
+
+      const newElement = {
+        name: nameCapitalize,
+        sku: sku,
+        type: type,
+        price: price,
+        description: descripcionCapitalize,
+        quantity: quantity,
+        img: img,
+        category: category,
+        deleted: deleted,
+        important: important
+      };
+
+      //const name = capitalizeWords(newElement.name);
+
+      //const new4catalogo = await newElement.save();
+      res.json(newElement);
     } catch (err) {
       console.log(err);
     }
   },
+
   elementUp: async function (req, res, next) {
     try {
       const up = await Products.updateOne({ _id: req.params.id }, req.body);

@@ -49,10 +49,9 @@ module.exports = {
         important: important
       };
 
-      //const name = capitalizeWords(newElement.name);
+      const new4catalogo = await newElement.save();
 
-      //const new4catalogo = await newElement.save();
-      res.json(newElement);
+      res.json(new4catalogo);
     } catch (err) {
       console.log(err);
     }

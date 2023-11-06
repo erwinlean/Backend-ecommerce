@@ -8,6 +8,7 @@ router.get("/name/:name", controller.elementByName);
 router.post("/create", controller.createElement);
 router.put("/:id", controller.elementUp);
 router.put("/name/:name", controller.allElementUp);
+router.put("/stock/:id", controller.stockUpdate); // stock update
 //router.delete("/:id", controller.elementDelete);
 router.delete("/delete", controller.allElementsDelete);
 

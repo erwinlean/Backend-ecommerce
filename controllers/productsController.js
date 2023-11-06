@@ -1,9 +1,9 @@
-const products = require("../schema/productsSchema");
+const Products = require("../schema/productsSchema");
 
 module.exports = {
   allElements: async function (req, res, next) {
     try {
-      const everyElement = await products.find().populate("category");
+      const everyElement = await Products.find().populate("category");
       res.json(everyElement);
     } catch (err) {
       console.log(err);
@@ -12,7 +12,7 @@ module.exports = {
 
   elementById: async function (req, res, next) {
     try {
-      const elements = await products.findById(req.params.id);
+      const elements = await Products.findById(req.params.id);
       res.json(elements);
     } catch (err) {
       console.log(err);
@@ -21,7 +21,7 @@ module.exports = {
 
   elementByName: async function (req, res, next) {
     try {
-      const elementsName = await products.find({ name: req.params.name });
+      const elementsName = await Products.find({ name: req.params.name });
       res.json(elementsName);
     } catch (err) {
       console.log(err);
@@ -30,7 +30,7 @@ module.exports = {
 
   createElement: async function (req, res, next) {
     try {
-      const newElement = new products({
+      const newElement = new Products({
         name: req.body.name,
         sku: req.body.sku,
         type: req.body.type,
@@ -51,16 +51,39 @@ module.exports = {
   },
   elementUp: async function (req, res, next) {
     try {
-      const up = await products.updateOne({ _id: req.params.id }, req.body);
+      const up = await Products.updateOne({ _id: req.params.id }, req.body);
       res.json(up);
     } catch (err) {
       console.log(err);
     }
   },
+
+  stockUpdate: async function (req, res, next) {
+    try{
+      const { quantity } = req.body;
+      const productId = req.params;
+
+      const product = await Products.findOne(productId);
+
+      if (!product) {
+        return res.status(404).json({ error: 'Producto no encontrado' });
+      };
+
+      product.quantity -= quantity;
+
+      product.save();
+
+      res.json(product);
+
+    } catch(error){
+      console.log(error);
+      res.status(500).json({ error: 'Error interno del servidor' });
+    };
+  },
   
   allElementUp: async function (req, res, next) {
     try {
-      const upAll = await products.updateMany({ name: req.params.name }, req.body);
+      const upAll = await Products.updateMany({ name: req.params.name }, req.body);
       res.json(upAll);
     } catch (err) {
       console.log(err);
@@ -69,7 +92,7 @@ module.exports = {
 
   elementDelete: async function (req, res, next) {
     try {
-      const deleteOne = await products.deleteOne({ _id: req.params.id });
+      const deleteOne = await Products.deleteOne({ _id: req.params.id });
       res.json(deleteOne);
     } catch (err) {
       console.log(err);
@@ -78,7 +101,7 @@ module.exports = {
 
   allElementsDelete: async function (req, res, next) {
     try {
-      const deleteMany = await products.deleteMany({});
+      const deleteMany = await Products.deleteMany({});
       res.json(deleteMany);
     } catch (err) {
       console.log(err);

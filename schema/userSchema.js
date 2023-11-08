@@ -35,6 +35,12 @@ const users = mongoose.Schema({
     userImg: {
         type: String,
         default: defaultImageURI,
+    },
+    userRole: {
+        type: String,
+        required: [true, errMessage.general.campo_obligatorio],
+        enum: ["user", "admin"],
+        default: "user"
     }
 });
 

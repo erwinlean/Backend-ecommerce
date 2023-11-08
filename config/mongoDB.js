@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 require('dotenv').config();
 const dbCluster = process.env.DB_CLUSTER;
 
-console.log('DB Cluster:', dbCluster);
+mongoose.set('strictQuery', false);
 
 mongoose.connect(dbCluster, {
   useNewUrlParser: true,

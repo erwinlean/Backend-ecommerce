@@ -37,27 +37,53 @@ module.exports = {
 
   createElement: async function (req, res, next) {
     try {
-      const { name, sku, type, price, description, quantity, img, category, deleted, important } = req.body;
-
-      const nameCapitalize = capitalizeWords(name);
-      const descripcionCapitalize = capitalizeWords(description);
-
-      const newElement = new Products({
-        name: nameCapitalize,
-        sku: sku,
-        type: type,
-        price: price,
-        description: descripcionCapitalize,
-        quantity: quantity,
-        img: img,
-        category: category,
-        deleted: deleted,
-        important: important
-      });
-
-      const new4catalogo = await newElement.save();
-
-      res.status(201).json(new4catalogo);
+      const requestData = req.body;
+  
+      if (Array.isArray(requestData)) {
+        const createdProducts = [];
+  
+        for (const element of requestData) {
+          const { name, sku, price, description, quantity, img, category, deleted, important } = element;
+          const nameCapitalize = capitalizeWords(name);
+          const descripcionCapitalize = capitalizeWords(description);
+  
+          const newElement = new Products({
+            name: nameCapitalize,
+            sku: sku,
+            price: price,
+            description: descripcionCapitalize,
+            quantity: quantity,
+            img: img,
+            category: category,
+            deleted: deleted,
+            important: important
+          });
+  
+          const savedProduct = await newElement.save();
+          createdProducts.push(savedProduct);
+        };
+  
+        res.status(201).json(createdProducts);
+      } else {
+        const { name, sku, price, description, quantity, img, category, deleted, important } = requestData;
+        const nameCapitalize = capitalizeWords(name);
+        const descripcionCapitalize = capitalizeWords(description);
+  
+        const newElement = new Products({
+          name: nameCapitalize,
+          sku: sku,
+          price: price,
+          description: descripcionCapitalize,
+          quantity: quantity,
+          img: img,
+          category: category,
+          deleted: deleted,
+          important: important
+        });
+  
+        const savedProduct = await newElement.save();
+        res.status(201).json(savedProduct);
+      };
     } catch (err) {
       console.error(err);
       res.status(500).json({ error: 'Error interno del servidor' });

@@ -4,7 +4,6 @@ const Category = require("./categoriesSchema");
 const productSchema = new mongoose.Schema({
     name: {
         type: String,
-        lowercase: true,
         minlength: 1,
     },
     sku: {
@@ -18,7 +17,6 @@ const productSchema = new mongoose.Schema({
     },
     description: {
         type: String,
-        lowercase: true,
         required: true,
         minlength: 10,
     },

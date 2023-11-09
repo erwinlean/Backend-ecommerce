@@ -10,13 +10,13 @@ module.exports = {
 
             if (!allUsers || allUsers.length === 0) {
                 return res.status(404).json({ message: 'Usuarios no encontrados' });
-            }
+            };
 
             return res.json({ usuarios: allUsers });
         } catch (error) {
             console.error(error);
             return res.status(500).json({ message: 'Error interno del servidor' });
-        }
+        };
     },
 
     createUser: async function (req, res, next) {
@@ -55,7 +55,7 @@ module.exports = {
         } catch (error) {
             console.error(error);
             return res.status(500).json({ message: 'Error interno del servidor' });
-        }
+        };
     },
 
     userLogin: async function (req, res, next) {
@@ -66,13 +66,13 @@ module.exports = {
 
             if (!user) {
                 return res.status(404).json({ message: 'No se encontró un usuario con ese correo electrónico' });
-            }
+            };
 
             const passwordMatch = bcrypt.compareSync(password, user.password);
 
             if (!passwordMatch) {
                 return res.status(401).json({ message: 'Contraseña incorrecta' });
-            }
+            };
 
             const token = jwt.sign(
                 {
@@ -89,8 +89,18 @@ module.exports = {
         } catch (error) {
             console.error(error);
             return res.status(500).json({ message: 'Error interno del servidor' });
-        }
+        };
     },
+
+    userUpdate: async function (req, res, next) {
+        try {
+          const up = await users.updateOne({ _id: req.params.id }, req.body);
+          res.status(200).json(up);
+        } catch (err) {
+          console.error(err);
+          res.status(500).json({ error: 'Error interno del servidor' });
+        };
+      },
 
     deleteUser: async function (req, res, next) {
         try {
@@ -117,15 +127,15 @@ module.exports = {
                         }
                         if (!user) {
                             return res.status(404).json({ message: `Usuario ${emailToDelete} no encontrado` });
-                        }
+                        };
                         return res.json({ message: `Usuario ${emailToDelete} eliminado exitosamente` });
                     });
-                }
+                };
             });
         } catch (error) {
             console.error(error);
             return res.status(500).json({ message: 'Error interno del servidor' });
-        }
+        };
     },
 
     deleteAllUsers: async function (req, res, next) {

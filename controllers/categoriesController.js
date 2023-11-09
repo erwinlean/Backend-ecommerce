@@ -8,7 +8,7 @@ module.exports = {
     } catch (err) {
       console.error(err);
       res.status(500).json({ error: "Internal server error" });
-    }
+    };
   },
 
   create: async function (req, res, next) {
@@ -17,7 +17,7 @@ module.exports = {
 
       if (!name) {
         return res.status(400).json({ error: 'Name is required' });
-      }
+      };
 
       const newCategory = new categories({
         name: name,
@@ -28,7 +28,7 @@ module.exports = {
     } catch (err) {
       console.error(err);
       res.status(400).json({ error: "Bad request" });
-    }
+    };
   },
   
   elementDelete: async function (req, res, next) {
@@ -38,6 +38,6 @@ module.exports = {
     } catch (err) {
       console.error(err);
       res.status(500).json({ error: "Internal server error" });
-    }
+    };
   },
 };

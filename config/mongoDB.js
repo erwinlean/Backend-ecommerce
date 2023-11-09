@@ -8,7 +8,7 @@ mongoose.connect(dbCluster, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 }).then(() => {
-  console.log('Connected to MongoDB Atlas');
+  console.log('Connected: MongoDB Atlas');
 }).catch((err) => {
   console.error('Failed to connect to MongoDB Atlas:', err);
 });

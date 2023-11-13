@@ -84,7 +84,7 @@ async function uploadLogFileToDrive(localFilePath, logEntry) {
         };
 
         // Eliminar el archivo local después de cargarlo en Google Drive
-        fs.unlinkSync(localFilePath);
+        //fs.unlinkSync(localFilePath);
     } catch (error) {
         console.error('Error uploading log file to Google Drive:', error);
     };

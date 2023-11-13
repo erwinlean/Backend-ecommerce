@@ -7,10 +7,6 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const jsonWebT = require('./config/jwt');
 const db = require('./config/mongoDB');
-const cors = require('cors');
-const swaggerUi = require('swagger-ui-express');
-const swaggerSpec = require('./documentation/doc');
-const { logGenerator } = require('./logs/logs');
 
 // Router import
 var indexRouter = require('./routes/index');
@@ -28,7 +24,6 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Middlewares
 const corsOptions = {
   origin: '*'
 };
@@ -36,17 +31,7 @@ app.use(cors(corsOptions));
 
 app.jsonwebtocken = jsonWebT;
 
-// Ignore favicon
-app.get('/favicon.ico', (req, res) => res.status(204));
-
-// Doc
-//app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-
-// Logs
-app.use(logGenerator);
-
-// Router first step endpoint
-app.use('/api/', indexRouter);
+app.use('/api/', indexRouter); 
 app.use('/api/users', usersRouter);
 app.use('/api/products', productsRouter);
 app.use('/api/categories', categoriesRouter);

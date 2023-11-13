@@ -5,6 +5,7 @@ README.md
 /.pnp
 .pnp.js
 /config/mongoDB.js
+/logs/googleAccess.json
 
 # testing
 /coverage

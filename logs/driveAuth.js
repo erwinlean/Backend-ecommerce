@@ -5,7 +5,7 @@ const { google } = require('googleapis');
 //const credentials = require('./googleAccess.json');
 require('dotenv').config();
 const client_email = process.env.CLIENT_EMAIL;
-const private_key = process.env.PRIVATE_KEY
+const private_key = process.env.PRIVATE_KEY.split(String.raw`\n`).join('\n');
 
 let storedCredentials;
 

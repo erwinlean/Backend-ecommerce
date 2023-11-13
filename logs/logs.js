@@ -1,13 +1,10 @@
 "use strict";
 
-const fs = require('fs');
-const path = require('path');
 const { google } = require('googleapis');
 const { authenticate } = require('./driveAuth');
 require('dotenv').config();
 
 const driveFolder = process.env.DRIVE_FOLDER;
-// const driveFile = process.env.driveFile;
 
 async function logGenerator(req, res, next) {
     const logEntry = {
@@ -17,21 +14,16 @@ async function logGenerator(req, res, next) {
         ip: req.ip || req.connection.remoteAddress,
     };
 
-    // Ruta al archivo de logs
-    const logFilePath = path.join(__dirname, 'logs.txt');
-
-    fs.appendFile(logFilePath, JSON.stringify(logEntry) + '\n', async (err) => {
-        if (err) {
-            console.error('Error writing to request log:', err);
-            next();
-        } else {
-            await uploadLogFileToDrive(logFilePath, logEntry);
-            next();
-        };
-    });
+    try {
+        await uploadLogEntryToDrive(logEntry);
+        next();
+    } catch (error) {
+        console.error('Error uploading log entry to Google Drive:', error);
+        next();
+    };
 };
 
-async function uploadLogFileToDrive(localFilePath, logEntry) {
+async function uploadLogEntryToDrive(logEntry) {
     try {
         const auth = await authenticate();
         const drive = google.drive({ version: 'v3', auth });
@@ -62,33 +54,27 @@ async function uploadLogFileToDrive(localFilePath, logEntry) {
                 },
             });
 
-            console.log('Log file updated on Google Drive successfully.');
+            console.log('Log entry updated on Google Drive successfully.');
         } else {
-            const media = {
-                mimeType: 'text/plain',
-                body: fs.createReadStream(localFilePath),
-            };
-
-            const fileMetadata = {
-                name: 'logs.txt',
-                parents: [driveFolder],
-            };
-
+            // Crear un nuevo archivo si no existe
             await drive.files.create({
-                resource: fileMetadata,
-                media: media,
+                resource: {
+                    name: 'logs.txt',
+                    parents: [driveFolder],
+                },
+                media: {
+                    mimeType: 'text/plain',
+                    body: JSON.stringify(logEntry) + '\n',
+                },
                 fields: 'id',
             });
 
-            console.log('Log file uploaded to Google Drive successfully.');
+            console.log('Log entry uploaded to Google Drive successfully.');
         };
-
-        // Eliminar el archivo local después de cargarlo en Google Drive
-        //fs.unlinkSync(localFilePath);
     } catch (error) {
-        console.error('Error uploading log file to Google Drive:', error);
+        console.error('Error uploading log entry to Google Drive:', error);
+        throw error;
     };
 };
-
 
 module.exports = { logGenerator };

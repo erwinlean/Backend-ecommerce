@@ -10,7 +10,7 @@ const private_key = process.env.PRIVATE_KEY
 let storedCredentials;
 
 async function authenticate() {
-    const { client_email, private_key } = credentials;
+    //const { client_email, private_key } = credentials;
     const oAuth2Client = new google.auth.JWT({
         email: client_email,
         key: private_key,

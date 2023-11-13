@@ -1,3 +1,5 @@
+/* Api for simple ecommerce */
+
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
@@ -5,8 +7,8 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const jsonWebT = require('./config/jwt');
 const db = require('./config/mongoDB');
-const cors = require('cors');
 
+// Router import
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var productsRouter = require('./routes/products');
@@ -29,7 +31,7 @@ app.use(cors(corsOptions));
 
 app.jsonwebtocken = jsonWebT;
 
-app.use('/api/', indexRouter);
+app.use('/api/', indexRouter); 
 app.use('/api/users', usersRouter);
 app.use('/api/products', productsRouter);
 app.use('/api/categories', categoriesRouter);

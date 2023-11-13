@@ -5,6 +5,7 @@ const { authenticate } = require('./driveAuth');
 require('dotenv').config();
 
 const driveFolder = process.env.DRIVE_FOLDER;
+// const driveFile = process.env.driveFile;
 
 async function logGenerator(req, res, next) {
     const logEntry = {
@@ -14,11 +15,11 @@ async function logGenerator(req, res, next) {
         ip: req.ip || req.connection.remoteAddress,
     };
 
-    try {
-        await uploadLogEntryToDrive(logEntry);
+    try{
+        console.error('Error writing to request log:', err);
         next();
-    } catch (error) {
-        console.error('Error uploading log entry to Google Drive:', error);
+    } catch (err){
+        await uploadLogEntryToDrive(logEntry);
         next();
     };
 };
@@ -76,5 +77,6 @@ async function uploadLogEntryToDrive(logEntry) {
         throw error;
     };
 };
+
 
 module.exports = { logGenerator };

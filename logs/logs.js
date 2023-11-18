@@ -8,11 +8,10 @@ const driveFolder = process.env.DRIVE_FOLDER;
 
 async function logGenerator(req, res, next) {
     const requestStart = Date.now();
-    let logged = false; // Flag to ensure next() is called only once
+    let logged = false;
 
-    // Attach an event listener to the 'close' event of the response
     res.on('close', async () => {
-        if (logged) return; // If already logged, do nothing
+        if (logged) return; 
 
         const logEntry = {
             ip: req.ip || req.connection.remoteAddress,
@@ -28,17 +27,18 @@ async function logGenerator(req, res, next) {
         try {
             // Log entry is created when the connection closes
             await uploadLogEntryToDrive(logEntry);
-            logged = true; // Set the flag to true
+            logged = true;
 
             return logEntry;
         } catch (err) {
-            console.error('Error writing to request log or uploading to Google Drive:', err);
+            console.error('Error writing to request log or uploading to Google Drive:', err)
             return err.message
         };
     });
 
     next();
 };
+
 
 async function uploadLogEntryToDrive(logEntry) {
     try {

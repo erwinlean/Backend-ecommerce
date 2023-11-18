@@ -5,23 +5,39 @@ const { authenticate } = require('./driveAuth');
 require('dotenv').config();
 
 const driveFolder = process.env.DRIVE_FOLDER;
-// const driveFile = process.env.driveFile;
 
 async function logGenerator(req, res, next) {
-    const logEntry = {
-        endpoint: req.path,
-        method: req.method,
-        timestamp: new Date(),
-        ip: req.ip || req.connection.remoteAddress,
-    };
+    const requestStart = Date.now();
+    let logged = false; // Flag to ensure next() is called only once
 
-    try{
-        console.error('Error writing to request log:', err);
-        next();
-    } catch (err){
-        await uploadLogEntryToDrive(logEntry);
-        next();
-    };
+    // Attach an event listener to the 'close' event of the response
+    res.on('close', async () => {
+        if (logged) return; // If already logged, do nothing
+
+        const logEntry = {
+            ip: req.ip || req.connection.remoteAddress,
+            endpoint: req.path,
+            url: `${req.rawHeaders[9]}${req.path}`,
+            method: req.method,
+            // header: req.rawHeaders,
+            timestamp: new Date(),
+            processingTime: `${Date.now() - requestStart} ms`,
+            resStatus: res.statusCode
+        };
+
+        try {
+            // Log entry is created when the connection closes
+            await uploadLogEntryToDrive(logEntry);
+            logged = true; // Set the flag to true
+
+            return logEntry;
+        } catch (err) {
+            console.error('Error writing to request log or uploading to Google Drive:', err);
+            return err.message
+        };
+    });
+
+    next();
 };
 
 async function uploadLogEntryToDrive(logEntry) {
@@ -60,7 +76,7 @@ async function uploadLogEntryToDrive(logEntry) {
             // Crear un nuevo archivo si no existe
             await drive.files.create({
                 resource: {
-                    name: 'logs.txt',
+                    name: 'eCommerceLogs.txt',
                     parents: [driveFolder],
                 },
                 media: {

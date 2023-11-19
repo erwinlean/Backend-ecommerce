@@ -46,7 +46,7 @@ async function uploadLogEntryToDrive(logEntry) {
         const drive = google.drive({ version: 'v3', auth });
 
         const existingFile = await drive.files.list({
-            q: `'${driveFolder}' in parents and name='logs.txt' and trashed=false`,
+            q: `'${driveFolder}' in parents and name='eCommercelogs.txt' and trashed=false`,
             fields: 'files(id)',
         });
 
@@ -71,7 +71,7 @@ async function uploadLogEntryToDrive(logEntry) {
                 },
             });
 
-            console.log('Log entry updated on Google Drive successfully.');
+            console.log('Log entry updated on Google Drive successfully in new file.');
         } else {
             // Crear un nuevo archivo si no existe
             await drive.files.create({
@@ -86,7 +86,7 @@ async function uploadLogEntryToDrive(logEntry) {
                 fields: 'id',
             });
 
-            console.log('Log entry uploaded to Google Drive successfully.');
+            console.log('Log entry uploaded to Google Drive successfully, just update file.');
         };
     } catch (error) {
         console.error('Error uploading log entry to Google Drive:', error);
